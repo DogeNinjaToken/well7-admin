@@ -1,0 +1,1 @@
+(()=>{const c=window.DEEPWELL_FARM;window.DEEPWELL_MEME={chainId:97,factoryAddress:c.memeFactoryAddress,feePolicyAddress:c.memeFeePolicyAddress,wellAddress:c.tokenAddress,rpcUrl:c.rpcUrl,explorerUrl:c.explorerUrl};})();

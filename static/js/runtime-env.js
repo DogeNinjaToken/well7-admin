@@ -1,0 +1,1 @@
+window.DEEPWELL_ENV={chainId:97,rpcUrl:window.DEEPWELL_FARM.rpcUrl,explorerUrl:window.DEEPWELL_FARM.explorerUrl};

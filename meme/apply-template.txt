@@ -1,0 +1,1 @@
+Deepwell meme listing applications: use /meme/apply/ to download a JSON application. No submission backend is configured; applicants must send the downloaded application to the project team through an independently published official channel. Never share private keys.
