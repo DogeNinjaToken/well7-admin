@@ -1,1 +1,132 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Deepwell Admin · WELL7 Testnet</title><link rel="stylesheet" href="/admin.css"></head><body><header class="admin-top"><a href="/">DEEPWELL ADMIN</a><a href="/manage/">Pools & vaults</a><a href="/meme/admin/">Meme administration</a><a href="/strength/">Protocol operations</a></header><main class="home"><div class="hero"><small>OPERATIONS CONSOLE / BSC TESTNET 97</small><h1>Keep the protocol moving.</h1><p>Manage the existing WELL7 deployment from a separate workspace. Quotes and simulations prepare your actions. Your wallet confirms every transaction.</p></div><div class="grid"><a class="card" href="/manage/"><h2>Pools & stock vaults ↗</h2><p>Register assets, configure routes, initialise V3 pools, pause deposits and fund rewards.</p></a><a class="card" href="/meme/admin/"><h2>Meme administration ↗</h2><p>Create approved pools, activate funded projects and manage deposit availability.</p></a><a class="card" href="/strength/"><h2>Protocol operations ↗</h2><p>Inspect fee buckets, process destinations, collect V3 fees and reinvest.</p></a><a class="card" href="/meme/"><h2>Meme funding ↗</h2><p>Open existing pool pages to fund rewards and inspect their lifecycle.</p></a></div><section class="card"><h2>Assisted processing</h2><p>Refreshes on demand or every 60 seconds while this page is open. Direct approved V2 routes are quoted automatically. V3 operations use the protocol operations page. Monitoring never submits transactions.</p><label>Fee asset<select id="asset"></select></label><label>Destination<select id="destination"><option value="growth">GrowthRewards</option><option value="buyback">Buyback</option><option value="liquidity">V2 POL liquidity</option></select></label><label>Amount in token units<input id="amount" value="0.00001"></label><button id="quote">Refresh quote and simulate</button> <button id="send" disabled>Review in MetaMask</button><label><input id="monitor" type="checkbox" style="width:auto;display:inline"> Refresh every 60 seconds</label><pre id="result">Connect the owner wallet, select an asset and request a quote.</pre></section><section class="card"><h2>Transaction journal</h2><button id="refresh">Reconcile pending transaction</button> <button id="export">Download journal</button><pre id="journal"></pre><details><summary>Recover an interrupted wallet request</summary><p>If a request has no stored hash, paste its hash from MetaMask. The sender, recipient, calldata and value must match before it can be reconciled. An uncertain transaction is never automatically retried.</p><input id="recoverHash" placeholder="0x transaction hash"><button id="recover">Verify recovery hash</button></details></section><p>Separate frontend, shared chain state. Run one processing workflow at a time. This static wallet gate is not hosting access control; use private hosting or Vercel deployment protection if the pages themselves must be private.</p></main><script src="/static/js/ethers.umd.min.js"></script><script src="/guard.js"></script><script src="/static/js/bsc-config.js"></script><script src="/home.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Deepwell Admin · BSC Testnet 97</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <header class="admin-top">
+    <a class="brand" href="/">DEEPWELL ADMIN</a>
+    <nav>
+      <a href="/manage/">Pools &amp; vaults</a>
+      <a href="/meme/admin/">Meme administration</a>
+      <a href="/strength/">Protocol operations</a>
+    </nav>
+  </header>
+
+  <main class="admin-shell">
+    <div class="hero">
+      <small>OPERATIONS CONSOLE / BSC TESTNET 97</small>
+      <h1>Keep the protocol moving.</h1>
+      <p>Manage the existing WELL7 deployment from a separate workspace. Automated route discovery, threshold checks, and continuous health monitoring prepare your actions.</p>
+    </div>
+
+    <div class="cards">
+      <a class="card" href="/manage/">
+        <h2>Pools &amp; stock vaults ↗</h2>
+        <p>Register assets, configure routes, initialise V3 pools, pause deposits and fund rewards.</p>
+      </a>
+      <a class="card" href="/meme/admin/">
+        <h2>Meme administration ↗</h2>
+        <p>Create approved pools, activate funded projects and manage deposit availability.</p>
+      </a>
+      <a class="card" href="/strength/">
+        <h2>Protocol operations ↗</h2>
+        <p>Inspect fee buckets, process destinations, collect V3 fees and reinvest.</p>
+      </a>
+      <a class="card" href="/meme/">
+        <h2>Meme funding ↗</h2>
+        <p>Open existing pool pages to fund rewards and inspect their lifecycle.</p>
+      </a>
+    </div>
+
+    <section class="panel" id="health-monitor-section">
+      <h2>Continuous health, custody &amp; reserve monitor</h2>
+      <p>Automatically reconciles MasterFactory principal/reward solvency, V3 NFT custody, GrowthRewards reserves, StockRewardVault cycles, and MemeRewardPool coverage.</p>
+      <div class="controls">
+        <button id="runHealthCheck" type="button">Run full reconciliation now</button>
+        <label><input id="autoHealthMonitor" type="checkbox" checked> Continuous 60s monitor &amp; alerts</label>
+        <input id="alertWebhookUrl" type="url" placeholder="Optional Discord / Telegram webhook URL for alerts">
+      </div>
+      <pre id="healthReport">Running initial on-chain reconciliation…</pre>
+    </section>
+
+    <section class="panel" id="auto-queue-section">
+      <h2>Automated threshold queue (Buckets, V3 Collect &amp; Reinvest)</h2>
+      <p>Scans all approved assets for worthwhile fee-bucket balances (using automatic V2 + V3 multi-hop route discovery), V3 positions with collectable fees, and POL manager balances ready for V3 reinvestment.</p>
+      <div class="controls">
+        <label>Min WBNB/Major bucket
+          <input id="threshMajor" type="text" value="0.001">
+        </label>
+        <label>Min Token/Stock bucket
+          <input id="threshStandard" type="text" value="1">
+        </label>
+        <label>Min V3 fee collect (raw/token)
+          <input id="threshV3Collect" type="text" value="0.0005">
+        </label>
+        <label>Default POL target
+          <select id="autoPolVersion">
+            <option value="0">V2 LP (POL Vault)</option>
+            <option value="1">V3 Full-Range (2500 tier)</option>
+          </select>
+        </label>
+      </div>
+      <div class="controls">
+        <button id="scanQueue" type="button">Scan &amp; build executable queue</button>
+        <button id="runNextQueue" type="button" disabled>Execute next ready task</button>
+        <button id="runAllQueue" type="button" disabled>Execute all ready tasks</button>
+      </div>
+      <pre id="queueOutput">Click "Scan &amp; build executable queue" to evaluate all buckets and V3 positions against thresholds.</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Assisted single-bucket processing</h2>
+      <p>Refreshes on demand or every 60 seconds while this page is open. Automatically discovers direct or multi-hop V2/V3 routes.</p>
+      <div class="controls">
+        <label>Asset <select id="asset"></select></label>
+        <label>Destination
+          <select id="destination">
+            <option value="liquidity">POL Liquidity</option>
+            <option value="growth">GrowthRewards</option>
+            <option value="buyback">Buyback Vault</option>
+          </select>
+        </label>
+        <label>Amount (leave blank for full bucket) <input id="amount" type="text" value="0.01"></label>
+        <label><input id="monitor" type="checkbox"> Auto-refresh 60s</label>
+        <button id="quote" type="button">Quote &amp; simulate</button>
+        <button id="send" type="button" disabled>Confirm in wallet</button>
+      </div>
+      <pre id="result">Connect the owner wallet, select an asset and request a quote.</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Transaction journal</h2>
+      <div class="controls">
+        <button id="refresh" type="button">Reconcile pending</button>
+        <button id="export" type="button">Export JSON</button>
+      </div>
+      <pre id="journal"></pre>
+      <details>
+        <summary>Recover an interrupted wallet request</summary>
+        <p>If a request has no stored hash, paste its hash from MetaMask. The sender, recipient, calldata and value must match before it can be reconciled. An uncertain transaction is never automatically retried.</p>
+        <div class="controls">
+          <input id="recoverHash" type="text" placeholder="0x… transaction hash">
+          <button id="recover" type="button">Verify &amp; reconcile</button>
+        </div>
+      </details>
+    </section>
+
+    <p class="foot">Separate frontend, shared chain state. Run one processing workflow at a time. This static wallet gate is not hosting access control; use private hosting or Vercel deployment protection if the pages themselves must be private.</p>
+  </main>
+
+  <script src="/static/js/ethers.umd.min.js"></script>
+  <script src="/static/js/bsc-config.js"></script>
+  <script src="/static/js/runtime-env.js"></script>
+  <script src="/static/js/wallet-session.js"></script>
+  <script src="/guard.js"></script>
+  <script src="/home.js"></script>
+</body>
+</html>
